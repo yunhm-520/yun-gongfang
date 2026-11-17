@@ -1,0 +1,375 @@
+<h2 class="sec" id="c4">05 · ② 指针设计</h2>
+
+<p>这一模块决定指针<strong>最终长什么样、多大、点哪儿生效、要不要动</strong>。所有导出都以这里的内容为准。</p>
+
+<h3 id="c4-1"><span class="n">5.1</span>画布尺寸：先想清楚给谁看</h3>
+
+<p>指针画布是正方形。右侧「画布 → 尺寸」可选 <strong>16 / 24 / 32 / 48 / 64 / 96 / 128 / 256</strong>，默认 64。</p>
+
+<figure>
+  <img src="说明书_图/fig4_sizes.png" alt="同一张图在 16/32/48/64/128/256 六种尺寸下的实际样子">
+  <figcaption><b>图 4</b>　同一张图在六种尺寸下的真实渲染（1:1 像素，未做放大）。尺寸越小越"软"，越大细节越多。</figcaption>
+</figure>
+
+<table>
+  <thead><tr><th style="width:100px">尺寸</th><th style="width:130px">适合</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>16 / 24 / 32</td><td>怀旧、极简</td><td>细节会丢光，只适合剪影类图形（箭头、圆点）</td></tr>
+    <tr><td><b>48 / 64</b></td><td><b>日常首选</b></td><td>64 是工具的默认值，多数显示器上清晰且文件小</td></tr>
+    <tr><td>96 / 128</td><td>高分屏、精细图案</td><td>带发丝、花纹、小字时用这个</td></tr>
+    <tr><td>256</td><td>极限</td><td>Windows 允许的最大值，文件最大，低分辨率屏上会被缩小</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">
+  <b>改尺寸会清空底图和全部动画帧</b>（有确认弹窗）。所以顺序建议是：<b>先在 ① 抠好图 → 到 ② 第一件事就是改尺寸 → 再点回 ①「用作指针画面」</b>。
+  反过来（先做内容再改尺寸）会白做。
+</div>
+
+<p>画布下面还有一个 <strong>像素风（最近邻缩放）</strong> 开关，只影响"缩放时怎么算像素"：</p>
+
+<table>
+  <thead><tr><th style="width:120px">素材类型</th><th>开关</th><th>效果</th></tr></thead>
+  <tbody>
+    <tr><td>像素画 / 游戏素材<br><span class="pill">Minecraft、FC、复古</span></td><td><b>勾上</b></td>
+        <td>缩放时直接取最近的像素，边缘保持硬朗，不会被平均成一团灰</td></tr>
+    <tr><td>照片 / 插画 / 截图</td><td><b>不勾</b></td>
+        <td>缩小按面积平均、放大做插值，边缘过渡自然，不会出锯齿</td></tr>
+  </tbody>
+</table>
+
+<div class="tip">
+  <b>放进去才发现糊？</b>多半是画布太小。原图的短边 ≥ 96 时工具会主动问你要不要把画布升到 96/128；
+  已经放进去的图，改尺寸后要<b>回 ① 重新点一次「用作指针画面」</b>才生效（画布大小变了，旧内容不会自动重采样）。
+  另外：一张图里有两个元素（比如箭头 + 人物），别整张塞进 64px，用 ✂️ 裁切分开，各自做一个角色。
+</div>
+
+<h3 id="c4-2"><span class="n">5.2</span>图层：叠加与微调</h3>
+
+<p>指针画布由「底图 + 若干图层」合成。底图就是「用作指针画面」放进去的那张；图层用来加装饰、加字、加小标志。</p>
+
+<table>
+  <thead><tr><th style="width:150px">操作</th><th>怎么用</th></tr></thead>
+  <tbody>
+    <tr><td>插入图片</td><td>操作条「🖼 插入图片」或右面板「＋ 插入图片」。新图层自动缩放到不超过画布，居中放置</td></tr>
+    <tr><td>选中图层</td><td>左侧 <kbd>V</kbd>（移动工具）→ 点画布上的图形，或点右面板图层列表</td></tr>
+    <tr><td>移动</td><td>选中后直接拖。图层框是蓝色虚线</td></tr>
+    <tr><td>缩放图层</td><td><kbd>Alt</kbd> + 滚轮（以中心缩放），或用右侧「缩放」滑杆 5%~400%</td></tr>
+    <tr><td>旋转</td><td>右侧「旋转」滑杆 −180° ~ 180°</td></tr>
+    <tr><td>透明度</td><td>右侧「不透明」5% ~ 100%</td></tr>
+    <tr><td>翻转 / 居中</td><td>右侧 ⇋ ⇅ / 居中，作用于当前选中图层</td></tr>
+    <tr><td>层级</td><td>「上移 / 下移」调整叠放顺序；列表顺序 = 绘制顺序（越靠下越在上层）</td></tr>
+    <tr><td>并入底图</td><td>把当前图层"拍平"进底图，之后不能再单独调，但可以减少运行时合成量</td></tr>
+    <tr><td>删除</td><td>右侧「删除」或按 <kbd>Delete</kbd></td></tr>
+  </tbody>
+</table>
+
+<h3 id="c4-3"><span class="n">5.3</span>绘图工具：补画细节</h3>
+
+<table>
+  <thead><tr><th style="width:90px">工具</th><th style="width:70px">键</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>✥ 移动</td><td><kbd>V</kbd></td><td>选/拖图层（默认工具）</td></tr>
+    <tr><td>✏️ 画笔</td><td><kbd>B</kbd></td><td>自由画线，笔粗 1~24px。颜色取操作条的颜色选择器或色板</td></tr>
+    <tr><td>🧽 橡皮</td><td><kbd>E</kbd></td><td>擦掉底图上的像素（不是删图层）</td></tr>
+    <tr><td>╱ 直线</td><td><kbd>L</kbd></td><td>拖一条直线，松手落墨</td></tr>
+    <tr><td>▭ 矩形</td><td><kbd>R</kbd></td><td>拖矩形框。勾「填充形状」变成实心</td></tr>
+    <tr><td>◯ 椭圆</td><td><kbd>O</kbd></td><td>同上，椭圆/圆</td></tr>
+    <tr><td>🅰 文字</td><td><kbd>T</kbd></td><td>点画布输入，字号 6~72。「填充形状」对它无效</td></tr>
+    <tr><td>💧 取色</td><td><kbd>I</kbd></td><td>从画布取一个颜色作为当前色</td></tr>
+    <tr><td>📍 热点</td><td><kbd>H</kbd></td><td>点画布设置"点下去"的位置（下一节详述）</td></tr>
+  </tbody>
+</table>
+
+<p>绘图都画在<strong>底图</strong>上，不是新建图层。画错了用 <kbd>Ctrl</kbd>+<kbd>Z</kbd>（设计模块 40 步历史）。
+「🧹 清空画布」会清掉底图内容但保留图层，用来重来。</p>
+
+<h3 id="c4-4"><span class="n">5.4</span>热点：最容易做错的一步</h3>
+
+<p><strong>热点 = 鼠标真正"点下去"的那个点。</strong>它决定了手感。做错的话指针图形是对的，但每次点击都偏半个图形，用起来极难受。</p>
+
+<figure>
+  <img src="说明书_图/fig5_hotspot.png" alt="热点位置正确与错误的对比">
+  <figcaption><b>图 5</b>　同一个图形，三种热点位置的手感差别。红色十字是热点。</figcaption>
+</figure>
+
+<h4>怎么设</h4>
+<ol class="steps">
+  <li><b>选 📍 热点工具</b>（快捷键 <kbd>H</kbd>），或直接点右面板「📍 画布点选」。</li>
+  <li><b>在画布上点一下</b>正确的点。红色十字会立刻移过去，右面板「热点 X / Y」同步更新。</li>
+  <li><b>微调</b>用右面板的 X / Y 数字框（范围 0 ~ 画布尺寸−1），或点「居中」「左上 0,0」快速归位。</li>
+</ol>
+
+<h4>该放在哪</h4>
+<ul>
+  <li><strong>箭头类</strong>：箭尖（通常是图形左上方的那个尖）。</li>
+  <li><strong>手型 / 十字 / 文本 I 形</strong>：正中心。</li>
+  <li><strong>对称图形（圆、星、徽章）</strong>：正中心，或图形尖端（做装饰时）。</li>
+  <li><strong>带"指示方向"的图形</strong>：指示的那个尖端。</li>
+</ul>
+
+<div class="tip">
+  <b>工具会自动猜一次</b>：取"最上面一行不透明像素的平均 X"。箭头类基本准，其他形状请自己改。
+  右下预览窗里的红色小圈就是热点的实际位置，配合不同背景色看最直观。
+</div>
+
+<h3 id="c4-5"><span class="n">5.5</span>动画帧：让它动起来</h3>
+
+<p>多帧 = <code>.ani</code> 动画指针；只有 1 帧 = <code>.cur</code> 静态指针。</p>
+
+<figure>
+  <img src="说明书_图/fig6_frames.png" alt="4 帧旋转星星动画与每帧时长示意">
+  <figcaption><b>图 6</b>　4 帧 × 120ms 的效果。每帧是一张完整的方形图，按顺序循环播放。</figcaption>
+</figure>
+
+<h4>怎么加帧</h4>
+<ol class="steps">
+  <li><b>做好一帧</b>在画布上调到满意的状态。</li>
+  <li><b>保存成帧</b>按 <kbd>Enter</kbd>，或点操作条「🎞 加入为帧」。底部托盘自动切到「帧」抽屉。</li>
+  <li><b>改一改再做下一帧</b>移动图层、转一下、改个字……再按 <kbd>Enter</kbd>。</li>
+  <li><b>重复</b>到满意为止。托盘里每一格就是一帧。</li>
+</ol>
+
+<h4>托盘里的操作</h4>
+<table>
+  <thead><tr><th style="width:120px">按钮</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr><td>复制</td><td>复制选中帧到它后面。做"只差一点点"的帧时最省事：复制 → 微调 → 覆盖本帧</td></tr>
+    <tr><td>删除</td><td>删掉选中帧</td></tr>
+    <tr><td>← / →</td><td>把选中帧往前/往后挪一位</td></tr>
+    <tr><td>反转</td><td>整条动画倒序（做"来回摆动"时有用）</td></tr>
+    <tr><td>覆盖本帧</td><td>用当前画布内容替换选中帧</td></tr>
+    <tr><td>载回画布</td><td>把选中帧读回画布继续编辑（会清空当前图层）</td></tr>
+    <tr><td>本帧 __ ms</td><td>选中帧的停留时间，10 ~ 2000ms，默认 90</td></tr>
+    <tr><td>时长→全部</td><td>把当前这个 ms 值应用到所有帧</td></tr>
+  </tbody>
+</table>
+
+<p>右下预览窗可以<strong>播放 / 暂停</strong>，缩放 1~4 倍，背景可选浅底 / 深底 / 棋盘——棋盘背景最适合检查透明边缘。</p>
+
+<div class="tip">
+  <b>帧数别太多。</b>3~8 帧足够；每多一帧，文件就大一圈，Windows 加载也慢。
+  做"呼吸感"用 2 帧 200ms 来回切就很自然。
+</div>
+
+<h3 id="c4-6"><span class="n">5.6</span>自动动画：不用手画，一键生成匹配动作</h3>
+
+<p>手画 8 帧太累，而且很容易"抖"。右面板「自动动画」卡片按<b>动作预设</b>直接算出来一组循环帧，
+每帧都是一张完整的画布快照，生成后照样能逐帧改、能覆盖、能调时长。</p>
+
+<table>
+  <thead><tr><th style="width:120px">动作</th><th style="width:96px">默认</th><th>效果与适合的角色</th></tr></thead>
+  <tbody>
+    <tr><td><b>呼吸浮动</b></td><td>8 帧 / 90ms</td><td>上下浮动 2% 画布高度，最通用。箭头、十字、I 形都稳</td></tr>
+    <tr><td><b>呼吸缩放</b></td><td>8 帧 / 90ms</td><td>绕中心 96%~100% 轻微缩放，比浮动更"活"</td></tr>
+    <tr><td><b>旋转</b></td><td>12 帧 / 90ms</td><td>整圈匀速转，<b>忙碌（Wait）</b>的经典做法</td></tr>
+    <tr><td><b>弹跳</b></td><td>8 帧 / 90ms</td><td>上下弹跳 + 落地压扁，<b>后台运行（AppStarting）</b>很合适</td></tr>
+    <tr><td><b>摇摆</b></td><td>8 帧 / 90ms</td><td>绕底部 ±5° 摇晃，人物/手型类素材最自然</td></tr>
+    <tr><td><b>光晕脉冲</b></td><td>8 帧 / 90ms</td><td>取素材自己的主色做外发光，强度呼吸。适合"帮助"、强调态</td></tr>
+    <tr><td><b>明暗呼吸</b></td><td>8 帧 / 90ms</td><td>整图不透明度 60%~100% 呼吸，做小沙漏/后台标记很讨巧</td></tr>
+  </tbody>
+</table>
+
+<p>切到某个角色时，动作下拉会<strong>自动选到推荐预设</strong>，卡片底下那行提示也会写清理由（比如「当前角色『忙碌』建议：旋转」）。</p>
+
+<table>
+  <thead><tr><th style="width:110px">参数</th><th style="width:150px">范围 / 默认</th><th>怎么调</th></tr></thead>
+  <tbody>
+    <tr><td>帧数</td><td>4 ~ 16，默认 8</td><td>旋转建议 12 帧才顺；呼吸类 6~8 帧够了。帧越多文件越大</td></tr>
+    <tr><td>每帧时长</td><td>50 ~ 150ms，默认 90</td><td>数字越小转得越快。整圈 12 帧 × 90ms ≈ 1.08 秒一圈</td></tr>
+    <tr><td>幅度</td><td>30 ~ 200，默认 100</td><td>动作大小。<b>指针本身很小，幅度大了会显得"抽"</b>，100 通常就够</td></tr>
+  </tbody>
+</table>
+
+<div class="tip">
+  <b>生成后还能改。</b>自动动画只是"填好一堆帧"，帧托盘照常可用：选中某帧 → 改画布 → 「覆盖本帧」，
+  或「复制」后微调。想加一点手绘细节（比如眨个眼），就在生成结果上改两帧。
+</div>
+
+<div class="warn">
+  <b>只有多帧才导出 .ani。</b>生成后至少保留 2 帧，否则这个角色会导出成静态 <code>.cur</code>（动画自然消失）。
+  另外：<b>热点位置不随动画移动</b>，浮动/摇摆类动作的"位移"只是视觉，点击点始终在同一个像素上。
+</div>
+
+<div class="meta" style="font-size:12.5px;color:var(--sub);margin-top:6px">
+  动画帧的封装格式参考了 <a href="https://github.com/damieng/Anim8Cursor" target="_blank">damieng/Anim8Cursor</a> 的 .ani 帧结构（每帧含独立热点 + rate 块），
+  预设动作本身是工具里用 Canvas 变换实时算的，不依赖外部服务。
+</div>
+
+<h3 id="c4-7"><span class="n">5.7</span>17 个指针角色：每个角色一份独立作品</h3>
+
+<p>Windows 的指针不是一张图，是 17 个"角色"（正常箭头、忙碌、文本 I 形、手型……）。
+以前的工具是<strong>一份作品通吃 17 个角色</strong>，做着做着就糊涂了：我这一笔是画给谁的？</p>
+
+<p>现在改成<strong>每个角色一份独立作品</strong>：切换角色时自动保存当前这份的<b>画布、图层、全部动画帧、热点</b>，
+再载入目标角色的那一份。互不干扰，切回来一模一样。</p>
+
+<h4>三处地方都会告诉你"现在是谁"</h4>
+<table>
+  <thead><tr><th style="width:150px">位置</th><th>显示内容</th></tr></thead>
+  <tbody>
+    <tr><td><b>画布上方角色栏</b></td><td>「正在编辑 <b>正常选择</b> · Arrow → pointer.cur」+ 状态标签（空白 / 静态 / 12 帧动画）；右边 17 个胶囊，当前那个是深蓝高亮，<b>有内容的角色带绿点</b></td></tr>
+    <tr><td><b>顶栏标签页</b></td><td>「② 指针设计 <b>· 忙碌</b>」——切到哪个角色，标签上就写哪个</td></tr>
+    <tr><td><b>右面板第一张卡片</b></td><td>大号角色名 + 导出文件名 + 状态；下面 17 个角色按钮，绿点表示这个角色已经有作品</td></tr>
+  </tbody>
+</table>
+
+<div class="steps">
+  <li><b>点角色栏里的「忙碌」</b>——画布清空（因为忙碌还没做过），角色栏立刻变成「正在编辑 忙碌 · Wait → busy.cur」</li>
+  <li><b>做这一份</b>：从 ① 用作指针画面、或直接画、或用下面的「自动动画」生成帧</li>
+  <li><b>点回「正常选择」</b>——刚才的箭头原封不动回来了，忙碌那份额外存着</li>
+</div>
+
+<div class="tip">
+  <b>没做的角色怎么办？</b>导出时<b>沿用当前正在编辑的那一份</b>，和旧版行为一致——只做一个箭头也能导出完整皮肤。
+  想给某个角色用别的图，就在导出面板那一行点 <b>「去编辑」</b>，会直接关掉面板、切到那个角色的画布上。
+</div>
+
+<div class="warn">
+  <b>换角色 = 换工作区。</b>撤销历史（<kbd>Ctrl+Z</kbd>）是<b>按角色分开</b>的，切过去之后撤不回上一个角色的操作；
+  文件也不会自动存盘——关页面前记得导出。
+</div>
+
+<h4>17 个角色速查</h4>
+
+<div class="card">
+  <div class="roles">
+    <div><i>01</i>正常选择（箭头）<span>Arrow</span></div>
+    <div><i>02</i>帮助选择<span>Help</span></div>
+    <div><i>03</i>后台运行（箭头+沙漏）<span>AppStarting</span></div>
+    <div><i>04</i>忙碌（沙漏/转圈）<span>Wait</span></div>
+    <div><i>05</i>精确选择（十字）<span>Crosshair</span></div>
+    <div><i>06</i>文本选择（I 形）<span>IBeam</span></div>
+    <div><i>07</i>手写（笔）<span>NWPen</span></div>
+    <div><i>08</i>不可用（圆圈斜杠）<span>No</span></div>
+    <div><i>09</i>垂直调整<span>SizeNS</span></div>
+    <div><i>10</i>水平调整<span>SizeWE</span></div>
+    <div><i>11</i>对角线调整 1<span>SizeNWSE</span></div>
+    <div><i>12</i>对角线调整 2<span>SizeNESW</span></div>
+    <div><i>13</i>移动（四向）<span>SizeAll</span></div>
+    <div><i>14</i>候选/备用选择<span>UpArrow</span></div>
+    <div><i>15</i>链接选择（手型）<span>Hand</span></div>
+    <div><i>16</i>位置选择（图钉）<span>Pin</span></div>
+    <div><i>17</i>个人选择（人形）<span>Person</span></div>
+    <div><i>—</i><span style="margin-left:0;color:#8ea0bb">共 17 个，缺一不可</span></div>
+  </div>
+</div>
+
+<h3 id="c4-8"><span class="n">5.8</span>实景试戴：导出前先看一眼</h3>
+
+<p>做完指针最怕的是"装上才发现不对"。顶栏的 <strong>👁 试戴</strong> 会在一个模拟桌面上
+把你的指针<strong>按真实像素尺寸</strong>放进去，还自带文档、按钮、窗口边框——鼠标移过去，
+它就会像在真系统里一样切换角色。</p>
+
+<ol class="steps">
+  <li><b>点顶栏 👁 试戴</b>。没有作品时会提示先回 ① 抠图；有作品就直接进桌面。</li>
+  <li><b>把鼠标移到预览区里</b>。移到正文 → 变 <b>I 形</b>（文本选择）；移到按钮/链接 → 变<b>手型</b>；
+      移到窗口边缘 → 变<b>调整大小</b>双箭头；移到桌面空白 → 变回<b>箭头</b>。这就是装好后的真实反应。</li>
+  <li><b>看红色十字</b>。它标的是<b>热点</b>——也就是系统认为你"点下去"的那个像素。
+      如果十字落在图案左上角、而你想让它落在笔尖或箭头尖上，回 ② 用 <span class="kbd">H</span> 键重设热点。</li>
+  <li><b>多帧作品会自动循环播放</b>，帧率就是你在底部调的每帧毫秒数，不用手动点播放。</li>
+</ol>
+
+<div class="card">
+  <p><strong>上排四个开关分别管什么</strong></p>
+  <table>
+    <tr><th style="width:96px">控件</th><th>作用</th></tr>
+    <tr><td>尺寸</td><td>32 / 48 / 64 / 96 / 128 px。选 32 看小尺寸糊不糊，选 96 看大尺寸细节够不够。</td></tr>
+    <tr><td>放大</td><td>1× 是真实大小；2× / 3× 只是<b>放大观察</b>，窗口里会标注"放大显示"，不代表实际会变大。</td></tr>
+    <tr><td>场景</td><td>桌面（深色壁纸 + 图标）、文档（白底）、深色（暗色界面）、棋盘（透明区可见）。
+        浅色图案在深色场景里最容易被看出白边，深色图案在文档场景里最容易看出毛边。</td></tr>
+    <tr><td>热点</td><td>关掉红色十字，只留一个小圆点，适合看整体效果时用。</td></tr>
+    <tr><td>示范</td><td>鼠标不进去时，指针会自己沿路径走一圈（正文 → 按钮 → 右下角 → 右边缘），
+        用来快速看完整套角色切换。</td></tr>
+  </table>
+</div>
+
+<p>下面一排是<b>角色胶囊</b>：默认选中 <b>🎯 自动</b>，按位置自动切换；
+点任意一个角色（比如"忙碌"）就<b>锁定</b>成那个角色，方便单独看它在深色和浅色背景上的效果。
+锁定后鼠标怎么移都不变，点回「自动」才恢复。</p>
+
+<div class="tip">
+  <b>两个常见误区。</b>一是<b>别在 1× 下判断清晰度</b>——32px 的指针本来就只有指甲盖大小，
+  看着糊是正常的，真正要判断的是"在 2× 下边缘有没有白边、热点有没有偏"。
+  二是<b>试戴不能替代导出后实装</b>：Windows 在不同缩放比例（100% / 125% / 150%）下会自己挑不同尺寸，
+  试戴看到的是"像素本身"，实装还要看系统怎么缩放。
+</div>
+
+<h2 class="sec" id="c5">06 · ③ 导出与安装</h2>
+
+<h3 id="c5-1"><span class="n">6.1</span>导出对话框</h3>
+
+<p>点右上「📦 导出皮肤」打开。需要填/确认的只有四项：</p>
+
+<table>
+  <thead><tr><th style="width:140px">字段</th><th style="width:190px">默认</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>皮肤名称</td><td>= 顶栏作品名</td><td><b>会出现在「鼠标属性 → 指针 → 方案」下拉里</b>，也用作文件夹名。建议用中文短名，别带 <code>\ / : * ? " &lt; &gt; |</code></td></tr>
+    <tr><td>指针尺寸</td><td>= 当前画布</td><td><code>.ani</code> 动画帧的尺寸（32/48/64/96/128/256）。静态 <code>.cur</code> 不用这个，用下面的多尺寸</td></tr>
+    <tr><td>.cur 多尺寸</td><td>48 / 64 / 96</td><td>一个 <code>.cur</code> 文件里打包多个尺寸，Windows 按当前 DPI 自动挑。全不勾时回落到 48/64/96；画布比勾选的大时会自动补一档，不白丢清晰度</td></tr>
+    <tr><td>角色表</td><td>17 行分别是「单独制作 / 沿用当前作品 / ✔ 外部文件」</td><td>三列按钮：<b>去编辑</b>（关面板直接切到那个角色的画布）、<b>换文件</b>（用你自己的 <code>.cur/.ani</code> 顶替）、<b>恢复</b>（清掉外部文件）</td></tr>
+  </tbody>
+</table>
+
+<p>对话框底部四个按钮：<strong>导出 CUR</strong>（只导一个静态指针文件）、<strong>导出 ANI</strong>（只导一个动画文件）、
+<strong>导出 INF</strong>（只导一个 Install.inf）、<strong>导出 ZIP（推荐）</strong>——一次给齐所有文件 + 脚本 + 说明。</p>
+
+<div class="tip">
+  <b>17 个角色是怎么出的？</b>按顺序判断：① 你给这一行指定了外部文件 → 用外部文件；
+  ② 这个角色在 ② 里单独做过（角色栏有绿点）→ 用<b>它自己</b>那份，多帧就出 <code>.ani</code>、单帧出 <code>.cur</code>；
+  ③ 都没做 → <b>沿用你当前正在编辑的那一份</b>。所以"只做一个箭头"也能导出完整皮肤，不会缺角色。
+</div>
+
+<h3 id="c5-2"><span class="n">6.2</span>ZIP 里到底有什么</h3>
+
+<figure>
+  <img src="说明书_图/fig7_inf.png" alt="ZIP 内容、注册表结构与文件落地位置">
+  <figcaption><b>图 7</b>　安装包的结构，以及它为什么不会破坏系统自带指针。</figcaption>
+</figure>
+
+<table>
+  <thead><tr><th style="width:200px">文件</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr><td>17 个 <code>.cur</code> / <code>.ani</code></td><td>每个指针角色一个文件，文件名固定（pointer / work / busy / hand …）</td></tr>
+    <tr><td><code>Install.inf</code></td><td>方案定义。声明"把这些文件复制到 Cursors\皮肤名\，并在 Schemes 下注册一个叫皮肤名的方案"</td></tr>
+    <tr><td><code>安装皮肤.bat</code></td><td>申请管理员 → 复制文件 → 注册方案。<b>装完才有得选</b></td></tr>
+    <tr><td><code>立即启用.bat</code></td><td>不用打开控制面板，直接写注册表并通知系统刷新（想立刻看到效果就用它）</td></tr>
+    <tr><td><code>卸载皮肤.bat</code></td><td>只删自己那一项方案和文件夹</td></tr>
+    <tr><td><code>恢复默认指针.bat</code></td><td>把当前指针切回 Windows 默认方案</td></tr>
+    <tr><td><code>立即生效.ps1</code> / <code>恢复默认.ps1</code></td><td>上面两个 bat 调用的 PowerShell 脚本（调用系统 API 立即刷新，不重启资源管理器）</td></tr>
+    <tr><td><code>说明.txt</code></td><td>角色 ↔ 文件名对照表，方便以后手动改</td></tr>
+  </tbody>
+</table>
+
+<h3 id="c5-3"><span class="n">6.3</span>安装（三步）</h3>
+
+<ol class="steps">
+  <li><b>解压 ZIP</b>到任意位置（桌面、下载都行）。<b>不要只把 bat 拖出来单独运行</b>，它需要旁边的指针文件和 INF。</li>
+  <li><b>双击「安装皮肤.bat」</b>。会弹 UAC 问是否允许管理员权限，点「是」。
+      看到「完成」后按任意键关闭窗口。</li>
+  <li><b>应用</b>打开「控制面板 → 鼠标（或 设置 → 蓝牙和其他设备 → 鼠标 → 其他鼠标设置）→ 指针」，
+      在「方案」下拉里选你的皮肤名 → 点 <b>应用</b> → 确定。</li>
+</ol>
+
+<div class="tip">
+  <b>懒得进控制面板</b>：直接双击「立即启用.bat」，它会把注册表写好并让系统立刻刷新，鼠标当场变。之后方案下拉里同样能看到你这一项。
+</div>
+
+<h4>装完想改 / 想撤</h4>
+<table>
+  <thead><tr><th style="width:220px">想要</th><th>做法</th></tr></thead>
+  <tbody>
+    <tr><td>切回系统默认外观</td><td>双击「恢复默认指针.bat」，或方案里选「Windows 默认」</td></tr>
+    <tr><td>彻底删掉这套皮肤</td><td>双击「卸载皮肤.bat」（删方案项 + 删文件夹）。<b>建议先切回默认再卸载</b></td></tr>
+    <tr><td>改了一版重新装</td><td>再跑一次「安装皮肤.bat」会覆盖同名文件夹，然后「立即启用.bat」</td></tr>
+    <tr><td>只换某一个角色</td><td>把新文件按「说明.txt」里的名字（如 <code>work.ani</code>）覆盖进 <code>C:\Windows\Cursors\皮肤名\</code>，再点「立即启用.bat」</td></tr>
+  </tbody>
+</table>
+
+<h3 id="c5-4"><span class="n">6.4</span>为什么它不会弄坏系统</h3>
+<ul>
+  <li>导出的指针文件放在 <code>C:\Windows\Cursors\你的皮肤名\</code> 这个<strong>独立文件夹</strong>里，不覆盖任何系统文件。</li>
+  <li>注册表只往 <code>HKCU\Control Panel\Cursors\Schemes</code> 下<strong>新增一个键值</strong>，不动 Aero 系列的 17 个默认项。</li>
+  <li>所以「鼠标属性」里看到的仍然是：Windows 默认、Windows 黑、Windows 反转……+ 你的皮肤名。<b>随时可以切走、切回。</b></li>
+  <li>安装脚本里做了一件小事：先把文件复制到临时目录再调系统安装接口。原因是 INF 安装路径含中文时容易失败，这样绕开了。</li>
+</ul>

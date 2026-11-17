@@ -1,0 +1,228 @@
+<h2 class="sec" id="c6">07 · 快捷键总表</h2>
+
+<table>
+  <thead><tr><th style="width:170px">快捷键</th><th style="width:110px">在哪个模块</th><th>作用</th></tr></thead>
+  <tbody>
+    <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>通用</td><td>撤销（① 16 步 / ② 40 步）</td></tr>
+    <tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>通用</td><td>重做</td></tr>
+    <tr><td>按住 <kbd>空格</kbd></td><td>通用</td><td>临时抓手，拖动平移画面</td></tr>
+    <tr><td>滚轮</td><td>通用</td><td>以光标为中心缩放视图</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>①</td><td>取消当前裁切框 / 切块框</td></tr>
+    <tr><td><kbd>W</kbd></td><td>①</td><td>魔棒</td></tr>
+    <tr><td><kbd>E</kbd></td><td>①</td><td>擦除画笔</td></tr>
+    <tr><td><kbd>R</kbd></td><td>①</td><td>恢复画笔</td></tr>
+    <tr><td><kbd>C</kbd></td><td>①</td><td>裁切</td></tr>
+    <tr><td><kbd>S</kbd></td><td>①</td><td>框选切块（精灵图用）</td></tr>
+    <tr><td><kbd>Shift</kbd> + 点击</td><td>①</td><td>魔棒继续抠另一片</td></tr>
+    <tr><td><kbd>Alt</kbd> + 点击</td><td>①</td><td>魔棒撤回该处</td></tr>
+    <tr><td><kbd>Enter</kbd></td><td>①</td><td>有裁切框 → 应用裁切；否则 → 应用切块</td></tr>
+    <tr><td><kbd>Delete</kbd></td><td>①</td><td>删掉素材列表最后一个</td></tr>
+    <tr><td><kbd>V</kbd></td><td>②</td><td>移动 / 选择图层</td></tr>
+    <tr><td><kbd>B</kbd></td><td>②</td><td>画笔</td></tr>
+    <tr><td><kbd>E</kbd></td><td>②</td><td>橡皮</td></tr>
+    <tr><td><kbd>L</kbd></td><td>②</td><td>直线</td></tr>
+    <tr><td><kbd>R</kbd></td><td>②</td><td>矩形</td></tr>
+    <tr><td><kbd>O</kbd></td><td>②</td><td>椭圆</td></tr>
+    <tr><td><kbd>T</kbd></td><td>②</td><td>文字</td></tr>
+    <tr><td><kbd>I</kbd></td><td>②</td><td>取色</td></tr>
+    <tr><td><kbd>H</kbd></td><td>②</td><td>设置热点</td></tr>
+    <tr><td><kbd>Alt</kbd> + 滚轮</td><td>②</td><td>缩放选中图层</td></tr>
+    <tr><td><kbd>Enter</kbd></td><td>②</td><td>把当前画面加入为帧</td></tr>
+    <tr><td><kbd>Delete</kbd></td><td>②</td><td>删除选中图层</td></tr>
+  </tbody>
+</table>
+
+<p class="pill">提示：在输入框里打字时，快捷键不生效，不会误触发工具切换。</p>
+
+<h2 class="sec" id="c7">08 · 常见问题 FAQ</h2>
+
+<div class="faq">
+  <q>Q1　双击 HTML 打开是白屏 / 一堆代码</q>
+  <p>被系统用错程序打开了。右键文件 → 打开方式 → Microsoft Edge（或 Chrome）。
+  如果仍然白屏，检查是不是把文件放在了网盘同步目录且尚未下载完整；也可以用 <code>edge://version</code> 确认浏览器版本 ≥ 88。</p>
+</div>
+
+<div class="faq">
+  <q>Q2　魔棒点了半天没反应</q>
+  <p>按这个顺序看：① 左侧 🪄 是否高亮（点到了别处就会用别的工具）；② 容差是不是被拖到个位数；
+  ③ 这块是不是已经抠过了（棋盘格处再点不会有变化）；④ 是不是选了「全图」但背景颜色跨度很大——换回「连通」。
+  最保险的做法：先按 <kbd>Ctrl</kbd>+<kbd>Z</kbd> 退回干净状态，容差调到 45 再点一次。</p>
+</div>
+
+<div class="faq">
+  <q>Q3　抠完边缘有一圈白边 / 粉边</q>
+  <p>不是没抠干净，是原图边缘像素的颜色被背景污染了。用右侧「批量去背 / 边缘精修」里的
+  <b>去色边 1~2 + 羽化 1</b>，点「一键精修边缘」即可。白边特别重时把去色边调到 3。</p>
+</div>
+
+<div class="faq">
+  <q>Q4　「一键变清晰」点了没反应 / 提示目标太大</q>
+  <p>提示"目标太大"说明放大后超过 1200 万像素：先用 ✂️ 裁切掉不需要的部分，或把放大倍数从 4× 降到 2×。
+  如果只是"看起来变化不大"，把锐化从 100 调到 150 试试；纯色块图形放大后本来就没什么可锐化的。</p>
+</div>
+
+<div class="faq">
+  <q>Q5　点「用作指针画面」之后图变小了很多，看着糊</q>
+  <p>因为画布默认只有 64×64。去 ② 右侧「画布 → 尺寸」改成 128 或 256，然后回 ① 再点一次「用作指针画面」。
+  <b>顺序不能反</b>：改尺寸会清空已有内容。</p>
+</div>
+
+<div class="faq">
+  <q>Q6　装完皮肤，鼠标没变</q>
+  <p>三件事依次确认：① <code>安装皮肤.bat</code> 有没有真的以管理员身份跑完（窗口里应该有"完成"）；
+  ② 「鼠标属性 → 指针 → 方案」里选中你的皮肤名后有没有点 <b>应用</b>；③ 把鼠标移到桌面上移动一下。
+  都做了还不变，直接双击 <code>立即启用.bat</code>，它会绕过控制面板直接写注册表。</p>
+</div>
+
+<div class="faq">
+  <q>Q7　方案下拉里找不到我的皮肤名</q>
+  <p>说明注册没成功。<b>把已经打开的鼠标属性窗口关掉重新打开</b>（它只在打开时读一次列表）。
+  仍然没有就重跑 <code>安装皮肤.bat</code>，注意别把 bat 单独拖出来运行——它要和 <code>Install.inf</code> 在同一目录。</p>
+</div>
+
+<div class="faq">
+  <q>Q8　动画不动，还是静态的</q>
+  <p>只有<b>帧数 ≥ 2</b> 才会导出 <code>.ani</code>。检查底部托盘「帧」抽屉里是不是真的有多帧；
+  另外 Windows 只在部分角色上播放动画（忙碌、后台运行、候选选择），"正常选择"箭头通常不播动画——这是系统行为，不是皮肤坏了。</p>
+</div>
+
+<div class="faq">
+  <q>Q9　指针太大 / 太小</q>
+  <p>「设置 → 辅助功能 → 鼠标指针和触控」里的"大小"是<strong>另一套机制</strong>（整体放大系统指针），和皮肤方案是两回事。
+  皮肤本身的视觉大小由文件里的图形占比决定：在 ② 里把图形缩小留白、或把画布尺寸调大再放图，都会让指针显得更小。</p>
+</div>
+
+<div class="faq">
+  <q>Q10　能保存工程吗？下次还能改吗</q>
+  <p><b>目前没有工程文件。</b>关掉页面 = 内容丢失。建议：原始大图另存一份；导出 ZIP 留着（里面的 17 个文件本身就是成品）；
+  想继续改就把导出的 <code>.cur/.ani</code> 拖回窗口，工具会把它读进 ② 让你接着编辑。</p>
+</div>
+
+<div class="faq">
+  <q>Q11　会把我上传的图传到服务器吗</q>
+  <p>不会。整个工具就是一个离线 HTML，所有计算都在你自己的浏览器里，断网也能用。可以打开开发者工具的 Network 面板验证：没有任何请求。</p>
+</div>
+
+<div class="faq">
+  <q>Q12　做的指针能商用 / 会侵权吗</q>
+  <p>工具本身不限制用途。但<strong>素材版权由你自己负责</strong>：用官方立绘、明星照片、影视截图做皮肤并分发，属于二次使用他人作品，
+  请自行确认授权范围。自己画的、买的商用素材、明确开源许可的图都没有这个问题。</p>
+</div>
+
+<div class="faq">
+  <q>Q13　② 里放大后为什么那么糊？像素一块块的</q>
+  <p><b>因为画布小，不是显示出了问题。</b>画布默认 64×64，在 ② 里放大到 6～7 倍显示，
+  一个"方格"就是一个设计像素；图里挤了两个元素时，每个只分到 30 来个像素，
+  再怎么放大也长不出细节。判断标准是<b>导出后 1:1 看</b>（或试戴里用 1×），不是看放大后的画布。</p>
+  <p>三条对策，按效果排序：</p>
+  <ol>
+    <li><b>放大画布</b>：右侧「画布 → 尺寸」改 128（素材够精细就 256），然后<b>回 ① 重新点一次「用作指针画面」</b>——
+        改尺寸会清空内容，旧图不会自动变清晰。原图短边 ≥ 96 时工具也会主动问你要不要升级。</li>
+    <li><b>一个元素一个角色</b>：箭头和人像别挤在一张 64px 图里。
+        抠完底直接点 <b>「🧩 拆成独立元素」</b>，工具会按连通块各切一份放进素材列表，
+        再逐个「用作指针画面」。<b>现在每个角色是独立作品</b>：画完箭头点角色栏切到「个人选择」，
+        做人物，两份互不覆盖；导出时各出各的文件。
+        （元素粘在一起拆不开时，改用 ✂️ 手工框选，或「精灵图切块」。）</li>
+    <li><b>像素画勾「像素风」</b>：勾上后缩放走最近邻，边缘保持硬块；不勾则按面积平均，适合照片插画。
+        勾错方向会让边缘变脏或变糊。</li>
+  </ol>
+  <p class="meta">另外，「一键变清晰」是插值 + 锐化，不能凭空长出细节；在 ① 里放大到 2× 再塞回 64px 画布，等于白做。</p>
+  <p class="meta"><b>算一下就明白了：</b>一张 1244×732 的素材图，整张塞进 64px 画布 = 缩小 19 倍，
+  右边的箭头只剩 21×29、人物只剩 35×36——脸只有 30 多个像素，再放大当然是一团。
+  同一个箭头单独放进 256px 画布是 188×256，人物单独放是 247×256，这才对得上"原图很清晰"。</p>
+</div>
+
+<div class="faq">
+  <q>Q14　怎么知道我现在做的是 17 个角色里的哪一个？切来切去会不会丢东西</q>
+  <p>看三处，任选一处都够：<b>画布上方的角色栏</b>（写着「正在编辑 正常选择 · Arrow → pointer.cur」）、
+  <b>顶栏标签页</b>（② 指针设计 · 忙碌）、<b>右面板第一张卡片</b>（大号角色名 + 状态）。</p>
+  <p>不会丢。切换角色时工具会先把你手上这份的<b>画布、图层、全部帧、热点</b>存进该角色名下，再载入目标角色的那份；
+  切回来一模一样。角色栏里<b>带绿点</b>的就是已经有作品的角色。</p>
+  <p class="meta">唯一要注意：撤销历史是按角色分开的，切过去之后 <kbd>Ctrl+Z</kbd> 撤不回上一个角色的操作。</p>
+</div>
+
+<div class="faq">
+  <q>Q15　自动动画会不会把别的角色搞乱？想只改其中一帧怎么办</q>
+  <p>不会。动画帧属于<b>当前角色</b>，生成只替换这个角色的帧，其他角色完全不受影响。</p>
+  <p>想微调：底部托盘切到「帧」抽屉 → 点某一帧 → 在画布上改 → 点「覆盖本帧」；
+  或者选中帧点「复制」再改。每帧的 ms 也能单独改（「本帧 __ ms」和「时长→全部」）。</p>
+  <p class="meta">只有 1 帧会导出成静态 <code>.cur</code>；想要 <code>.ani</code> 动画至少留 2 帧。</p>
+</div>
+
+<h2 class="sec" id="c8">09 · 限制与已知问题</h2>
+
+<table>
+  <thead><tr><th style="width:180px">限制</th><th>说明 / 绕法</th></tr></thead>
+  <tbody>
+    <tr><td>最大 256×256</td><td>Windows 指针格式的硬上限，无法突破。想要"更大"只能让图形本身占满画布</td></tr>
+    <tr><td>只有 Windows 格式</td><td>输出 <code>.cur</code> / <code>.ani</code>。macOS 用不了（它要 .cape 或第三方工具）</td></tr>
+    <tr><td>没有工程保存</td><td>见 FAQ Q10。重要作品请及时导出 ZIP</td></tr>
+    <tr><td>AI 超分有前提</td><td>「🚀 AI 超分」走开源 WebSR + Real-ESRGAN，需要 <b>Chrome / Edge 113+（WebGPU）</b>且<b>首次联网下载模型</b>；不满足时只能用本地 Lanczos + USM（那条路径不联网、但不会"长"出新细节）</td></tr>
+    <tr><td>AI 超分是"重建"</td><td>模型会按训练数据补细节，极端放大的局部可能有小面积"猜"的痕迹。定稿前建议放大看一眼</td></tr>
+    <tr><td>硬边有轻微振铃</td><td>Lanczos3 在纯硬边（如方形色块）的 alpha 上会有约 8% 的过冲，表现为边缘一像素的浅色描边。人眼基本不可见，介意的话改用 2× + 锐化 60</td></tr>
+    <tr><td>大图处理会被限流</td><td>放大后 &gt; 1200 万像素直接拒绝；去噪 &gt; 420 万像素自动跳过。低配机器上请先裁切</td></tr>
+    <tr><td>一次只处理一张图</td><td>拖多张只会保留最后一张。批量做请一张一张来</td></tr>
+    <tr><td>企业策略可能拦截</td><td>部分公司的组策略禁止修改指针方案，或禁止运行 bat。这种情况下装不上，需要联系 IT</td></tr>
+    <tr><td>浏览器要求</td><td>需要支持 Canvas / ES2020 的浏览器：Edge 88+、Chrome 88+。不保证在套壳浏览器里正常</td></tr>
+  </tbody>
+</table>
+
+<h2 class="sec" id="c9">10 · 附录</h2>
+
+<h3>术语表</h3>
+<table>
+  <thead><tr><th style="width:170px">词</th><th>意思</th></tr></thead>
+  <tbody>
+    <tr><td>.cur</td><td>Windows 静态指针文件格式。本质是带"热点坐标"的图标文件，内含 1 个或多个尺寸</td></tr>
+    <tr><td>.ani</td><td>Windows 动画指针格式。由多帧 <code>.cur</code> + 每帧停留时间组成</td></tr>
+    <tr><td>热点 / Hotspot</td><td>指针图里"真正点下去"的那个像素坐标。不是图形中心，而是你希望点击生效的点</td></tr>
+    <tr><td>角色 / Scheme Slot</td><td>Windows 定义的 17 种指针状态（箭头、忙碌、文本……），一套方案要配齐 17 个</td></tr>
+    <tr><td>INF</td><td>Windows 的安装信息文件。本项目用它"注册一个新指针方案"，而不是覆盖系统值</td></tr>
+    <tr><td>蒙版 / Mask</td><td>每个像素的透明度（0 = 全透明）。魔棒、画笔、浅底抠除改的都是它</td></tr>
+    <tr><td>预乘 alpha</td><td>把 RGB 先乘上透明度再插值，避免透明边缘放大后出现黑边。变清晰功能内部使用</td></tr>
+    <tr><td>Lanczos3</td><td>一种高质量重采样核函数，比双线性/双三次更锐利，是 pica 等库的默认高质量选项</td></tr>
+    <tr><td>角色（slot）</td><td>Windows 指针方案里的 17 个位置，每个位置对应一个注册表项和一个文件（pointer / work / busy …）</td></tr>
+    <tr><td>标准尺寸</td><td>裁掉空白 + 等比缩放 + 居中补透明后的严格 N×N 正方形图，N 常用 128</td></tr>
+    <tr><td>USM / 非锐化蒙版</td><td>经典锐化算法：原图减去模糊层得到"边缘细节"，再按强度加回原图</td></tr>
+  </tbody>
+</table>
+
+<h3>算法与开源参考</h3>
+<p>工具本身是零依赖的单文件，下列项目只作算法参考，代码为重新实现：</p>
+<ul>
+  <li><a href="https://github.com/damieng/Anim8Cursor" target="_blank">damieng/Anim8Cursor</a>（.ani 逐帧结构、rate 块）</li>
+  <li><a href="https://github.com/Der-Floh/Cursor-Installer-Creator" target="_blank">Der-Floh/Cursor-Installer-Creator</a>（17 角色映射 + INF 方案注册）</li>
+  <li><a href="https://github.com/ninjabonsai/canvas-magic-wand" target="_blank">ninjabonsai/canvas-magic-wand</a>（魔棒容差与软边）</li>
+  <li><a href="https://github.com/blindman67/FloodFill2D" target="_blank">blindman67/FloodFill2D</a>（flood fill 的 toleranceFade）</li>
+  <li><a href="https://github.com/nodeca/pica" target="_blank">nodeca/pica</a>（lanczos3 + unsharpMask，MIT）</li>
+  <li><a href="https://github.com/sb2702/websr" target="_blank">sb2702/websr</a>（AI 超分引擎，MIT，<b>实际使用</b>：🚀 按钮动态加载，WebGPU）</li>
+  <li><a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">xinntao/Real-ESRGAN</a>（Real-ESRGAN，BSD-3，模型 realesr-general-x4v3）</li>
+  <li><a href="https://github.com/bloc97/Anime4K" target="_blank">bloc97/Anime4K</a>（Anime4K，超分思路参考）</li>
+</ul>
+
+<h3>文件清单</h3>
+<table>
+  <thead><tr><th style="width:280px">文件</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td><code>指针工坊.html</code></td><td>主程序。单文件，双击即用</td></tr>
+    <tr><td><code>指针工坊_使用说明书.html</code></td><td>本文档（可 Ctrl+P 打印成 PDF）</td></tr>
+    <tr><td><code>说明书_图\</code></td><td>本文档用到的插图</td></tr>
+  </tbody>
+</table>
+
+<hr>
+
+<div class="card" style="background:#f9fbfe">
+  <h3 style="margin-top:0">还没解决的问题，欢迎反馈</h3>
+  <p style="margin-bottom:0">如果按说明书操作仍然不对，请描述：<b>在哪一步</b>、<b>点了哪个按钮</b>、<b>期望看到什么 / 实际看到什么</b>、
+  以及素材图的类型（白底海报 / 透明 PNG / 照片 / 精灵图）。这些信息足够定位绝大多数问题。</p>
+</div>
+
+<div class="foot">
+  指针工坊 Pro · 使用说明书 · 2026-11-16<br>
+  全部图片由工具自身的算法生成，未使用任何第三方素材。
+</div>
+
+</div>
+</body>
+</html>
